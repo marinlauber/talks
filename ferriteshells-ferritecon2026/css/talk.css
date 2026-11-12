@@ -1,0 +1,110 @@
+/* FerriteShells.jl talk: layout on top of theme.css */
+.reveal { font-size: 30px; }
+.reveal .slides > section, .reveal .slides > section > section { padding: 62px 64px 70px; }
+.reveal h2 { font-size: 1.32em; font-weight: 500; margin: 0 0 .45em; }
+.reveal h1 { font-size: 3em; }
+.reveal em { font-style: normal; font-weight: 600; color: var(--accent); }
+.reveal em.plain { font-weight: 400; }
+.reveal .lead { font-size: .85em; color: var(--muted); margin: 0 0 .5em; }
+.reveal .lead b, .reveal .lead2 b { color: var(--fg); font-weight: 700; }
+.reveal .lead2 { font-size: .85em; color: var(--muted); margin: 0 0 .6em; }
+.reveal .fn { color: var(--accent); }
+.reveal .fn.c { text-align: center; font-size: 1.05em; margin: 0 0 .4em; }
+.reveal .cap { text-align: center; }
+
+/* header / footer */
+.deck-header { position: fixed; top: 8px; right: 24px; z-index: 30; font: 14px var(--font); color: var(--muted); pointer-events: none; }
+body.on-title .deck-header { display: none; }
+.deck-footer { left: 18px !important; }
+.deck-footer span::before { content: ""; display: inline-block; width: 30px; height: 30px; vertical-align: middle;
+  margin-right: 10px; background: url("../img/ferrite_logo.png") center/contain no-repeat; }
+.deck-footer span { font-size: 19px; color: var(--fg); opacity: .85; }
+.reveal .slide-number { font-size: 16px !important; }
+
+/* title slides */
+.reveal section.title { text-align: center; }
+.reveal section.title h1 { font-weight: 800; }
+.reveal .logo-big { width: 170px; display: block; margin: 0 0 18px 70px; }
+.reveal section.title .subtitle { font-size: 1.5em; font-weight: 400; margin: 70px 0 30px; text-align: center; }
+.reveal .authors { font-size: 1.1em; color: var(--muted); margin: 0 0 .3em; }
+.reveal .authors b { color: var(--fg); }
+.reveal .affil { color: var(--muted); font-size: .95em; }
+.reveal section.title:first-child h1 { text-align: left; position: absolute; left: 340px; top: 70px; margin: 0; font-size: 3.2em; }
+.reveal .center-title { display: flex !important; align-items: center; justify-content: center; }
+.reveal .section-title { font-weight: 400; font-size: 2.6em; }
+
+/* lists */
+.reveal ul.big { margin: 40px 0 0 .6em; }
+.reveal ul.big li { font-size: 1.05em; color: var(--muted); margin: .45em 0; }
+.reveal ul.big li ul { margin-top: .2em; }
+.reveal ul.big li li { font-size: .85em; margin: .25em 0; }
+.reveal ul.big.tight { margin-top: 20px; }
+.reveal ul.big.tight li { font-size: .92em; margin: .5em 0; }
+.reveal ul.dash { list-style: none; margin: 0; }
+.reveal ul.dash li::before { content: "- "; }
+
+/* slide 2 */
+.trio { display: flex; gap: 22px; align-items: flex-start; justify-content: center; margin-top: 14px; }
+.trio figure { margin: 0; font-size: 17px; color: var(--muted); }
+.trio img { display: block; }
+.trio figure:first-child img, .trio figure:last-child img { max-height: 300px; max-width: 380px; }
+.trio .mid img.heart { max-height: 230px; max-width: 330px; }
+.trio .mid img.hhh { height: 150px; margin: 6px 0 0 24px; }
+.trio figcaption { margin: 4px 0 4px; }
+
+/* slide 3 */
+.theory h3 { font-size: 1.05em; color: var(--fg); font-weight: 500; margin: .2em 0 .1em; }
+.theory h3 span { color: var(--muted); }
+.theory .caveat { font-size: .6em; color: var(--muted); margin: .1em 0 1.1em; }
+.theory .eq .katex-display { font-size: .72em; text-align: left; margin: .5em 0; }
+.theory .eq .katex-display > .katex { text-align: left; }
+.cols.wide-left { grid-template-columns: 1.2fr 1fr; }
+.cols.wide-left .fig { width: 100%; }
+
+/* slide 4 */
+.small-eq .katex-display { font-size: .8em; margin: .25em 0; }
+.cols.side-covers { grid-template-columns: 1fr 170px; align-items: start; }
+.cols.side-covers .eq .katex-display { font-size: .95em; }
+.covers { display: flex; flex-direction: column; gap: 10px; }
+.covers img { width: 150px; }
+.doclink { position: absolute; right: 120px; bottom: 50px; font-size: 14px; }
+
+/* code */
+.reveal pre code { font-size: 1em; line-height: 1.35; }
+.reveal pre.code-s { font-size: 15.5px; }
+.reveal pre.code-m { font-size: 14px; }
+.reveal pre.code-m2 { font-size: 13px; }
+.reveal pre.code-m2 code { line-height: 1.24; padding: .7em 1em; max-height: 440px; }
+.reveal pre.code-xs { font-size: 11.5px; }
+.reveal pre.code-xs code { line-height: 1.28; max-height: 560px; padding: .8em 1em; }
+.reveal pre.code-s code, .reveal pre.code-m code { max-height: 520px; }
+.reveal pre code .hljs-ln-numbers { color: #75715e; }
+.cols.codes { gap: 24px; align-items: start; }
+.cols.codes.tall { grid-template-columns: 1.05fr 1fr; }
+
+/* slide 6 / 7 */
+.mitc { font-size: .6em; color: var(--fg); margin: .6em 0 0; }
+.stack { display: grid; margin-top: .2em; }
+.reveal section p.fragment { font-size: .8em; color: var(--muted); margin: .5em 0 0; }
+.stack > * { grid-area: 1 / 1; }
+.reveal .eq .katex-display { font-size: .85em; }
+
+/* slide 26 */
+.cols.wide-right { grid-template-columns: 1fr 1.7fr; align-items: start; }
+
+/* figures */
+.reveal img.fig { display: block; margin: 0 auto; max-width: 100%; }
+.reveal img.wide-fig { max-height: 540px; }
+.reveal img.tall-fig { max-height: 560px; }
+.cols.pair { grid-template-columns: 1fr 1fr; }
+.cols.pair img.fig { max-height: 500px; }
+.media.center { margin: 8px auto 0; }
+.media.center img, .media.center video { max-height: 470px; }
+.media.wide { max-width: 1100px; }
+
+/* thank you */
+.thanks { position: relative; height: 100%; }
+.thanks h1 { position: absolute; left: 0; bottom: 140px; font-size: 3em; font-weight: 400; }
+.thanks-right { position: absolute; left: 520px; top: 40px; font-size: .9em; color: var(--muted); }
+.thanks-right img { height: 230px; display: block; margin: 0 0 40px 110px; }
+.thanks-right p { margin: 0; }

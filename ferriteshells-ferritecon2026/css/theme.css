@@ -1,0 +1,85 @@
+/* Talk theme: light/dark, section label + footer, media layers, columns.
+   Colours are variables on <html data-theme="light|dark">; press L to toggle. */
+:root {
+  --bg: #ffffff; --fg: #1d2530; --muted: #6a7482; --accent: #0b7a8a; --rule: #d9dee5;
+  --code-bg: #f4f6f8; --font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+html[data-theme="dark"] {
+  --bg: #11161c; --fg: #e8ecf1; --muted: #9aa5b3; --accent: #4fc3d4; --rule: #2a323c;
+  --code-bg: #1a212a;
+}
+html, body { background: var(--bg); }
+.reveal { font-family: var(--font); color: var(--fg); font-size: 34px; }
+.reveal .slides { text-align: left; }
+
+/* Every slide is a full 1280x720 box with padding; top-left aligned (config: center:false) */
+.reveal .slides > section, .reveal .slides > section > section {
+  box-sizing: border-box; padding: 110px 70px 80px; height: 100%; width: 100%;
+}
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: var(--font); color: var(--fg); text-transform: none;
+  font-weight: 600; letter-spacing: -0.01em; line-height: 1.15; margin: 0 0 .5em;
+}
+.reveal h1 { font-size: 2.3em; }
+.reveal h2 { font-size: 1.5em; }
+.reveal h3 { font-size: 1.1em; color: var(--muted); font-weight: 500; }
+.reveal em { font-style: normal; color: var(--accent); }
+.reveal a { color: var(--accent); }
+.reveal ul, .reveal ol { margin-left: 1em; display: block; }
+.reveal li { margin: .35em 0; }
+.reveal p { margin: 0 0 .6em; line-height: 1.4; }
+.reveal .small { font-size: .7em; color: var(--muted); }
+
+/* Section label above the title: <section data-label="Method"> */
+.reveal section[data-label]::before {
+  content: attr(data-label); position: absolute; top: 48px; left: 70px;
+  font-size: 20px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent);
+}
+
+/* Footer and slide number (built by js/deck.js from <body data-footer="...">) */
+.deck-footer {
+  position: fixed; left: 70px; right: 70px; bottom: 10px; z-index: 30;
+  display: flex; justify-content: space-between; font: 14px var(--font); color: var(--muted);
+  pointer-events: none;
+}
+body.on-title .deck-footer { display: none; }
+.reveal .slide-number { background: none; color: var(--muted); font: 14px var(--font); right: 24px; bottom: 10px; }
+
+/* Two columns, vertically centred */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+.cols.wide-left { grid-template-columns: 3fr 2fr; }
+
+/* Code */
+.reveal pre { width: 100%; box-shadow: none; font-size: .55em; margin: 0; }
+.reveal pre code { max-height: 480px; border-radius: 8px; padding: 1em 1.2em; }
+
+/* Media layers: <div class="media" data-file="img/x.jpg" data-alt="…"> */
+.media { position: relative; display: flex; align-items: center; justify-content: center; }
+.media img, .media video { max-width: 100%; max-height: 520px; display: block; border-radius: 6px; }
+.media .credit { position: absolute; right: 8px; bottom: 6px; font-size: 13px; color: #fff;
+  background: rgba(0,0,0,.45); padding: 1px 6px; border-radius: 3px; }
+/* full-bleed variant: <section class="full"> with <div class="media bg"> */
+.reveal section.full { padding: 0; }
+.media.bg { position: absolute; inset: 0; }
+.media.bg img, .media.bg video { width: 100%; height: 100%; max-height: none; object-fit: cover; border-radius: 0; }
+.scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), rgba(0,0,0,0) 55%); }
+.on-image { position: absolute; left: 70px; right: 70px; bottom: 80px; color: #fff; }
+.on-image h1, .on-image h2 { color: #fff; }
+
+/* Missing files show a placeholder naming the file */
+.media .ph { border: 2px dashed var(--rule); border-radius: 8px; padding: 36px 28px; width: 100%;
+  min-height: 220px; display: flex; flex-direction: column; justify-content: center;
+  color: var(--muted); font-size: 20px; text-align: center; background: var(--code-bg); }
+.media .ph b { color: var(--fg); font-size: 22px; }
+.media.bg .ph { position: absolute; inset: 0; border: 0; border-radius: 0; }
+
+/* Big numbers */
+.bignums { display: flex; gap: 56px; margin-top: 30px; }
+.bignums b { display: block; font-size: 2.4em; color: var(--accent); line-height: 1; }
+.bignums div { font-size: .8em; max-width: 280px; }
+
+/* Citation / source line at the bottom of a slide */
+.cite { position: absolute; left: 70px; right: 70px; bottom: 44px; font-size: 16px; color: var(--muted); }
+
+/* Equations */
+.reveal .katex-display { margin: .6em 0; }

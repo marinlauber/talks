@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Talk title</title>
+  <link rel="stylesheet" href="../vendor/reveal/reset.css">
+  <link rel="stylesheet" href="../vendor/reveal/reveal.css">
+  <link rel="stylesheet" href="../vendor/reveal/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="../vendor/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="css/theme.css?v=1">
+</head>
+<!-- Footer text: edit data-footer. Keys: S speaker notes · L light/dark · Esc overview · F fullscreen -->
+<body data-footer="Your Name | Talk title | Event 2026">
+<div class="reveal"><div class="slides">
+
+  <!-- 1. Title slide (footer hidden because of class="title") -->
+  <section class="title">
+    <h1>Talk title with an <em>accent</em></h1>
+    <p>Your Name · Your Institute</p>
+    <p class="small">Event 2026</p>
+    <aside class="notes">Opening line goes here.</aside>
+  </section>
+
+  <!-- 2. Text with fragments. data-label gives the small section label above the title -->
+  <section data-label="Motivation">
+    <h2>One message per slide, written as a sentence</h2>
+    <ul>
+      <li>First point is visible straight away</li>
+      <li class="fragment">This one appears on the next click</li>
+      <li class="fragment">And this one after that</li>
+    </ul>
+    <aside class="notes">Speaker notes: only you see these (press S).</aside>
+  </section>
+
+  <!-- 3. Equations: \( inline \) and \[ display \] (KaTeX, loaded from a CDN) -->
+  <section data-label="Method">
+    <h2>Governing equations</h2>
+    \[ \frac{\partial \mathbf{u}}{\partial t} + (\mathbf{u}\cdot\nabla)\mathbf{u} = -\nabla p + \nu\,\nabla^2 \mathbf{u},
+       \qquad \nabla\cdot\mathbf{u} = 0 \]
+    <p class="fragment">with velocity \(\mathbf{u}\), pressure \(p\) and viscosity \(\nu\).</p>
+  </section>
+
+  <!-- 4. Code next to a figure (Julia highlighting; data-line-numbers highlights lines step by step) -->
+  <section data-label="Implementation">
+    <h2>Code on the left, result on the right</h2>
+    <div class="cols">
+      <pre><code class="language-julia" data-trim data-line-numbers="1-2|3-4">
+using WaterLily
+sim = Simulation((256, 128), (1, 0), 32; ν=1e-3)
+sim_step!(sim, 10)
+println(sim_time(sim))
+      </code></pre>
+      <div class="media" data-file="img/figure.png" data-alt="pressure field"></div>
+    </div>
+  </section>
+
+  <!-- 5. Full-bleed image or video with text on top -->
+  <section class="full" data-label="Results">
+    <div class="media bg" data-file="img/background.jpg" data-alt="full-slide image or looping video"></div>
+    <div class="scrim"></div>
+    <div class="on-image"><h2>Let the picture carry the slide</h2></div>
+  </section>
+
+  <!-- 6. Big numbers and a source line -->
+  <section data-label="Results">
+    <h2>Three numbers worth remembering</h2>
+    <div class="bignums">
+      <div><b>10×</b>faster than the baseline</div>
+      <div class="fragment"><b>3%</b>error against experiments</div>
+      <div class="fragment"><b>1</b>line to run it</div>
+    </div>
+    <div class="cite">Author et al., Journal, 2026</div>
+  </section>
+
+  <!-- 7. Thank you -->
+  <section class="title">
+    <h1>Thank you</h1>
+    <p>Questions? <a href="https://github.com/marinlauber">github.com/marinlauber</a></p>
+  </section>
+
+  <!-- Appendix: a nested <section> stack is reached with the down arrow -->
+  <section>
+    <section data-label="Appendix">
+      <h2>Additional material</h2>
+      <p class="small">Press ↓ for backup slides. They are skipped when you press → through the main talk.</p>
+    </section>
+    <section data-label="Appendix">
+      <h2>A backup slide</h2>
+      <p>Content you only show if asked.</p>
+    </section>
+  </section>
+
+</div></div>
+
+<script src="../vendor/reveal/reveal.js"></script>
+<script src="../vendor/reveal/plugin/notes/notes.js"></script>
+<script src="../vendor/katex/dist/katex.min.js"></script>
+<script src="../vendor/katex/dist/contrib/auto-render.min.js"></script>
+<script src="../vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="js/deck.js?v=1"></script>
+<script>
+  deckReady(Reveal);
+  // Equations: \( inline \) and \[ display \] LaTeX, rendered once Reveal is ready
+  Reveal.on('ready', () => {
+    renderMathInElement(document.querySelector('.slides'), {
+      delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}],
+      ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre'], throwOnError: false
+    });
+    Reveal.layout();
+  });
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0, center: false,
+    hash: true, slideNumber: 'c/t', controls: true, progress: true,
+    transition: 'fade', backgroundTransition: 'none',
+    plugins: [RevealNotes, RevealHighlight]
+  });
+</script>
+</body>
+</html>

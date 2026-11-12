@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FerriteShells.jl: a general shell assembler for Ferrite.jl</title>
+  <link rel="stylesheet" href="../vendor/reveal/reset.css">
+  <link rel="stylesheet" href="../vendor/reveal/reveal.css">
+  <link rel="stylesheet" href="../vendor/reveal/plugin/highlight/monokai.css">
+  <link rel="stylesheet" href="../vendor/katex/dist/katex.min.css">
+  <link rel="stylesheet" href="css/theme.css?v=1">
+  <link rel="stylesheet" href="css/talk.css?v=1">
+</head>
+<!-- Keys: S speaker notes · L light/dark · Esc overview · F fullscreen -->
+<body data-footer="FerriteCon 2026">
+<div class="deck-header">FerriteShells.jl - A general shell assembler for Ferrite.jl</div>
+<div class="reveal"><div class="slides">
+
+  <section class="title">
+    <img class="logo-big" src="img/ferrite_logo.png" alt="FerriteShells.jl logo">
+    <h1>FerriteShells.jl</h1>
+    <h2 class="subtitle">A general shell assembler for Ferrite.jl</h2>
+    <p class="authors">Marin Lauber, <b>Viola Bini</b> &amp; Mathias Peirlinck</p>
+    <p class="affil">Delft University of Technology</p>
+    
+  </section>
+  <section>
+    <h2>Shells are both natural and engineered structures</h2>
+    <p class="lead">A <b>thin</b>, <b>curved</b> plate structure shaped to transmit applied forces by <b>compressive</b>, <b>tensile</b>, and <b>shear stresses</b> that act in the plane of the surface (Encyclopedia Britannica)</p>
+    <div class="trio">
+      <figure><img src="img/wentletrap.jpg" alt="Wentletrap shell"><figcaption>Wentletrap (<i>Epitonium scalare</i>)</figcaption></figure>
+      <figure class="mid"><img class="heart" src="img/heart.jpg" alt="Total artificial heart prototype"><figcaption>Holland Hybrid Heart</figcaption><img class="hhh" src="img/hhh_logo.png" alt="Holland Hybrid Heart logo"></figure>
+      <figure><img src="img/candela.jpg" alt="Concrete shell structure"><figcaption><i>Cascarones</i> – Felix Candela</figcaption></figure>
+    </div>
+    <aside class="notes">Felix Candela: Spanish and Mexican architect who specialised in thin concrete structures during his career, most of them can be seen in Mexico, they are known as Cascarones.</aside>
+  </section>
+  <section>
+    <h2>Trade degrees-of-freedom for a <em>kinematic assumption</em> for the through-thickness behaviour</h2>
+    <div class="cols wide-left">
+      <div class="theory">
+        <h3>Kirchhoff–Love <span>(thin shells)</span></h3>
+        <div class="eq">\[ \Phi(\xi^1,\xi^2,\xi^3)=\phi(\xi^1,\xi^2)+\xi^3\,\hat{\mathbf a}_3(\xi^1,\xi^2) \]</div>
+        <p class="caveat">caveat: requires C¹ continuity (<em>FerriteIGA.jl</em>)</p>
+        <h3 class="fragment">Reissner–Mindlin <span>(thick shells)</span></h3>
+        <div class="eq fragment">\[ \begin{aligned}\Phi(\xi^1,\xi^2,\xi^3)&=\phi(\xi^1,\xi^2)+\xi^3\theta^{\lambda}(\xi^1,\xi^2)\,\mathbf a_\lambda(\xi^1,\xi^2)\\ &=\phi(\xi^1,\xi^2)+\xi^3\,\mathbf d(\xi^1,\xi^2)\end{aligned} \]</div>
+        <p class="caveat fragment">caveat: 5 degrees of freedom (:u; :θ)</p>
+      </div>
+      <img class="fig" src="img/shell_kinematics.jpg" alt="Shell midsurface, thickness direction, initial and deformed configuration">
+    </div>
+    <aside class="notes">By thick and thin, we usual refer to structures that have t/L &gt; 0.05 and t/L &lt; 0.05, respectively. Can maybe relate to the talk on FerriteIGA.jl that happened before for the C1 continuity?</aside>
+  </section>
+  <section>
+    <h2><em>Reissner–Mindlin</em> weak form of the internal energy</h2>
+    <div class="cols side-covers">
+      <div>
+        <p class="lead2">The “<b>compressive</b>, <b>tensile</b>, and <b>shear stresses</b>” part</p>
+        <div class="eq">\[ \mathcal{W}_{\mathrm{int}}=\int_{\omega}\tfrac12\Big(\fcolorbox{#1f6fd1}{white}{$N^{\alpha\beta}\gamma_{\alpha\beta}$}+\fcolorbox{#e08a1e}{white}{$M^{\alpha\beta}\kappa_{\alpha\beta}$}+\fcolorbox{#2e9d3a}{white}{$Q^{\alpha}\gamma_{\alpha}$}\Big)\sqrt{A}\,\mathrm{d}y \]</div>
+        <p class="lead2">and the strains (function of surface <b>measures</b>)</p>
+        <div class="eq small-eq">\[ \gamma_{\alpha\beta}=\tfrac12\left(a_{\alpha\beta}-A_{\alpha\beta}\right),\qquad \kappa_{\alpha\beta}=\tfrac12\left(\mathbf a_\alpha\cdot\mathbf d_{,\beta}+\mathbf a_\beta\cdot\mathbf d_{,\alpha}\right)-B^{0}_{\alpha\beta} \]
+        \[ \gamma_{\alpha}=\mathbf a_\alpha\cdot\mathbf d-\mathbf A_\alpha\cdot\mathbf G_3 \]</div>
+      </div>
+      <div class="covers"><img src="img/book_ciarlet.jpg" alt="Chapelle and Bathe, The Finite Element Analysis of Shells"><img src="img/book_chapelle.jpg" alt="Ciarlet, An Introduction to Differential Geometry with Applications to Elasticity"></div>
+    </div>
+    <div class="doclink"><a href="https://marinlauber.github.io/FerriteShells.jl/dev/ReissnerMindlin/">https://marinlauber.github.io/FerriteShells.jl/dev/ReissnerMindlin/</a></div>
+    <aside class="notes">Internal energy is a function of membrane (blue), bending (orange) and shear (green) terms. These in terms depend on covariant surface metrics, which are the classical strain components expressed in the curvilinear coordinates. This is also the Naghdi shell internal energy, but it&#x27;s obtained through another route.</aside>
+  </section>
+  <section>
+    <h2>The ideal <em>FerriteShells.jl</em> implementation should be:</h2>
+    <ul class="big">
+      <li>agnostic of the actual elements <em>Lagrange{Ref, Order}</em></li>
+      <li>use type dispatch as much as possible (Julia)</li>
+      <li>Minimal divergence from <a href="https://github.com/Ferrite-FEM/Ferrite.jl"><em>Ferrite.jl</em></a>
+        <ul><li>assemble shells using <em>CellValues</em> and <em>reinit!</em></li></ul></li>
+      <li>must stay fast and allocation free</li>
+    </ul>
+    <aside class="notes">Elements can be linear or quadratic quads, and linear and quadratic quadrilaterals, some of the most used ones. Type dispatch is the ability in Julia to specialize code for different types, which means you can reuse a lot of code by simply changing the bits that you need to specialize. It&#x27;s great obviously ;) Using reinit! Is to make sure we keep the Ferrite way of doing things.</aside>
+  </section>
+  <section>
+    <h2>Embed the surface metrics required in <em>ShellCellValues</em></h2>
+    <p class="lead2"><em>reinit!</em> Updates these local measures of the shell</p>
+    <div class="cols">
+      <img class="fig" src="img/shell_sketch.jpg" alt="Shell surface with curvilinear coordinates, covariant basis and director">
+      <div><pre class="code-s"><code class="language-julia" data-trim data-line-numbers>struct ShellCellValues{QR, IPG, IPS, T&lt;:AbstractFloat} &lt;: AbstractCellValues
+    # quadrature rule and interpolation spaces
+    qr       :: QR
+    ip_geo   :: IPG
+    ip_shape :: IPS
+    # same as CellValues
+    N, dNdξ, d2Ndξ2, detJdV :: Various{T}
+    # additional fields for shells
+    A₁, A₂, A₁₁, A₁₂, A₂₂ :: Vector{Vec{3, T}}
+    G₃, T₁, T₂            :: Vector{Vec{3, T}}
+    # local measure of the shell
+    A_metric :: Vector{SymmetricTensor{2, 2, T, 3}}
+    B        :: Vector{SymmetricTensor{2, 2, T, 3}}
+    # local frame
+    G₃_elem, T₁_elem, T₂_elem :: Vector{Vec{3, T}}
+    # shear locking treatment
+    mitc :: AbstractMITC
+end</code></pre>
+        <p class="mitc"><em>mitc</em>: shear interpolation to ensure correct asymptotic behaviour of <b>thick</b> shells as t/L -> 0 (the <b>thin</b> part)</p></div>
+    </div>
+    <aside class="notes">The ShellCellValues is an extension of CellValues to hold the surface measures required to assemble shells. It has the classical function and geometric interpolation as well as the quadrature rule. It also stores the shape function values, derivative and jacobian locally (they are needed a lot in the assembly). Then it stores the covariant basis vectors, the covariant unit basis vector and the covariant component of the metric and bending tensor at each integration points. Additionally, it stores the local frame and the mitc interpolation scheme (if any). Note: this code won&#x27;t work, it&#x27;s for illustrative purpose.</aside>
+  </section>
+  <section>
+    <h2>Assembly: variation of the energy through <em>ForwardDiff.jl</em></h2>
+    <div class="eq">\[ \mathcal{W}_{\mathrm{int}}=\int_{\omega}\tfrac12\Big(N^{\alpha\beta}\gamma_{\alpha\beta}+M^{\alpha\beta}\kappa_{\alpha\beta}+Q^{\alpha}\gamma_{\alpha}\Big)\sqrt{A}\,\mathrm{d}y \]</div>
+    <div class="stack">
+      <div class="fragment fade-out" data-fragment-index="1"><pre class="code-m2"><code class="language-julia" data-trim data-line-numbers>function energy_RM(uₑ::Vector{T}, scv::ShellCellValues, mat) where T
+    W = zero(T)
+    # loop over quadrature points
+    for qp in 1:getnquadpoints(scv)
+        # compute covariant basis, director field, curvature tensor, and shear strains
+        a₁, a₂ = covariant_basis(scv, qp, uₑ)
+        d, d₁, d₂ = director_field(scv, qp, uₑ)
+        κ = curvature_tensor(a₁, a₂, d₁, d₂, scv.B[qp])
+        γ₁, γ₂ = shear_strains(a₁, a₂, d, qp, scv.mitc)
+        # compute the reference director field
+        d₀ = reference_director(scv, qp)
+        # compute the covariant metric tensor
+        c_ms = SymmetricTensor{2,2,T}((dot(a₁,a₁), dot(a₁,a₂), dot(a₂,a₂)))
+        # compute the membrane stress and tangent, bending stiffness, and shear stiffness
+        N, _ = membrane_stress_and_tangent(mat, c_ms, scv.A_metric[qp])
+        D, Cs = bending_and_shear_stiffness(mat, c_ms, scv.A_metric[qp])
+        E = (c_ms - scv.A_metric[qp]) / 2
+        # compute the energy contribution at this quadrature point
+        W += 0.5*(N ⊡ E) + 0.5*(κ ⊡ D ⊡ κ) + 0.5*(Cs[1,1]*γ₁^2 + 2*Cs[1,2]*γ₁*γ₂ + Cs[2,2]*γ₂^2)
+    end
+    return W
+end</code></pre></div>
+      <div class="fragment fade-in" data-fragment-index="1"><pre class="code-m2"><code class="language-julia" data-trim data-line-numbers>&quot;&quot;&quot;
+    residuals_RM_FD!(re, scv, u_e, mat)
+
+Reissner-Mindlin total residual (membrane + bending + shear) via ForwardDiff.gradient of `energy_RM`.
+`u_e` is a flat vector of length 5·`n_nodes`.
+&quot;&quot;&quot;
+function residuals_RM_FD!(re, scv, u_e, mat)
+    re .+= ForwardDiff.gradient(u -&gt; energy_RM(u, scv, mat), u_e)
+end
+
+&quot;&quot;&quot;
+    tangent_RM_FD!(ke, scv, u_e, mat)
+
+Reissner-Mindlin total tangent (membrane + bending + shear) via ForwardDiff.hessian of `energy_RM`.
+`u_e` is a flat vector of length 5·`n_nodes`.
+&quot;&quot;&quot;
+function tangent_RM_FD!(ke, scv, u_e, mat)
+    ke .+= ForwardDiff.hessian(u -&gt; energy_RM(u, scv, mat), u_e)
+end</code></pre></div>
+    </div>
+    <p class="fragment" data-fragment-index="2">Explicit version for fast and allocation-free version</p>
+    <aside class="notes">This is the actual code! In practice this is too slow, so we have explicit assembly procedures for these terms, but this function can still be used as validation and in some complex cases. Uses Tensors.jl for operations between surface metrics, material tensors, etc.</aside>
+  </section>
+  <section>
+    <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
+    <p class="lead2"><span class="fn">linear_elasticity.jl</span> case into a <span class="fn">linear_elastic_shell.jl</span></p>
+    <div class="media center" data-file="img/mesh_single.jpg" data-alt="Displacement magnitude, linear elasticity"></div>
+    
+  </section>
+  <section>
+    <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
+    <div class="cols codes">
+      <div><p class="fn c">linear_elasticity.jl</p><pre class="code-m"><code class="language-julia" data-trim data-line-numbers>using Ferrite, FerriteGmsh
+# ...
+grid = togrid(logo_mesh)
+# ...
+ip = Lagrange{RefTriangle,1}()^dim
+# ...
+cellvalues = CellValues(qr, ip)
+# ...
+facetvalues = FacetValues(...)
+# ...
+C = gradient(...)
+# ...
+assemble_cell!(...); assemble_global!(...)
+# ...
+assemble_external_forces!(...)
+# ...</code></pre></div>
+      <div><p class="fn c">linear_elastic_shell.jl</p><pre class="code-m"><code class="language-julia" data-trim data-line-numbers>using FerriteShells, FerriteGmsh
+# ...
+grid = shell_grid(togrid(logo_mesh))
+# ...
+ip = Lagrange{RefTriangle,1}()
+# ...
+scv = ShellCellValues(qr, ip, ip)
+# ...
+# (not needed)
+# ...
+mat = LinearElastic(Emod, ν, thickness)
+# ...
+assemble_shell!(K, r, dh, scv, u, mat)
+# ...
+assemble_traction!(f_ext, dh, facetset, ip, fqr, traction)
+# ...</code></pre></div>
+    </div>
+    
+  </section>
+  <section>
+    <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
+    <div class="cols codes tall">
+      <div><pre class="code-xs"><code class="language-julia" data-trim data-line-numbers>function assemble_global!(K, dh, cellvalues, C)
+    # Allocate the element stiffness matrix
+    n_basefuncs = getnbasefunctions(cellvalues)
+    ke = zeros(n_basefuncs, n_basefuncs)
+    # Create an assembler
+    assembler = start_assemble(K)
+    # Loop over all cells
+    for cell in CellIterator(dh)
+        # Update the shape function gradients based on the cell coordinates
+        reinit!(cellvalues, cell)
+        # Reset the element stiffness matrix
+        fill!(ke, 0.0)
+        # Compute element contribution
+        for q_point in 1:getnquadpoints(cellvalues)
+            # Get the integration weight for the quadrature point
+            dΩ = getdetJdV(cellvalues, q_point)
+            for i in 1:getnbasefunctions(cellvalues)
+                # Gradient of the test function
+                ∇Nᵢ = shape_gradient(cellvalues, q_point, i)
+                for j in 1:getnbasefunctions(cellvalues)
+                    # Symmetric gradient of the trial function
+                    ∇ˢʸᵐNⱼ = shape_symmetric_gradient(cellvalues, q_point, j)
+                    ke[i, j] += (∇Nᵢ ⊡ C ⊡ ∇ˢʸᵐNⱼ) * dΩ
+                end
+            end
+        end
+        # Assemble ke into K
+        assemble!(assembler, celldofs(cell), ke)
+    end
+end</code></pre></div>
+      <div><pre class="code-xs"><code class="language-julia" data-trim data-line-numbers># shell assembly function
+function assemble_shell!(K, r, dh, scv, u, mat)
+    # number of degrees of freedom per element
+    n = ndofs_per_cell(dh)
+    ke = zeros(n, n)
+    re  = zeros(n)
+    # prepare for assembly
+    assembler = start_assemble(K, r)
+    for cell in CellIterator(dh)
+        # fill with zeros
+        fill!(ke, 0.0); fill!(re, 0.0)
+        # prepares reference geometry
+        reinit!(scv, cell)
+        # extract element displacement vector
+        u_e = u[shelldofs(cell)]
+        # assemble residual
+        membrane_residuals_RM!(re, scv, u_e, mat)
+        bending_residuals_RM!(re, scv, u_e, mat)
+        # assemble tangent
+        membrane_tangent_RM!(ke, scv, u_e, mat)
+        bending_tangent_RM!(ke, scv, u_e, mat)
+        # assemble into global system
+        assemble!(assembler, shelldofs(cell), ke, re)
+    end
+end</code></pre></div>
+    </div>
+    
+  </section>
+  <section>
+    <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
+    <p class="lead2"><span class="fn">linear_elasticity.jl</span> case into a <span class="fn">linear_elastic_shell.jl</span></p>
+    <div class="media center" data-file="img/mesh_comparison.jpg" data-alt="Displacement magnitude: Ferrite.jl (left) and FerriteShells.jl (right)"></div>
+    <p class="small cap">Note: plane strain vs plane stress</p>
+    
+  </section>
+  <section>
+    <h2>Examples — Membrane Shear</h2>
+    <p class="lead2"><em class="plain">Lagrange{RefQuadrilateral, 1}</em> – Newton-Raphson solver with Pseudo-Transient Continuation (PTC) to traverse the unstable equilibrium path</p>
+    <p class="small">Top edge sheared with u<sub>y</sub> = 0.05·t and u<sub>x</sub> = 3·(t−1)·x/380.</p>
+    <div class="media center wide" data-file="img/membrane_shear.mp4" data-alt="Membrane shear: vertical displacement"></div>
+    <aside class="notes">There is a slight perturbation of the vertical position of the nodes in the form w = 0.01·cos(2x/20)·cos(2y/20) [mm]</aside>
+  </section>
+  <section>
+    <h2>Examples — Thin Pillow Inflation</h2>
+    <p class="lead2"><em class="plain">Lagrange{RefQuadrilateral, 2, MITC9}</em> with Newton-Raphson and HHT-α time integration.</p>
+    <div class="media center wide" data-file="img/pillow_inflation.mp4" data-alt="Thin pillow inflation: displacement magnitude"></div>
+    
+  </section>
+  <section>
+    <h2><em>FerriteShells.jl</em> – summary</h2>
+    <ul class="big">
+      <li><em>CellValues</em> become <em>ShellCellValues</em>
+        <ul><li>Shear treatment through <em>MITC</em></li><li>curved geometries with <em>NodeFrames</em></li></ul></li>
+      <li>Element assembly through <em>reinit!(::ShellCellValues)</em></li>
+      <li>Helpers for energy, residuals and tangent
+        <ul><li>Explicit and <em>ForwardDiff.jl</em> variants</li></ul></li>
+      <li><em>LinearElastic</em> material</li>
+      <li><em>HyperElastic</em> material <em>W(C::SymmetricTensor{2,3,T}) -> T</em>
+        <ul><li>Incompressible plane stress</li><li>Compressible plane stress (Newton condensation)</li></ul></li>
+    </ul>
+    
+  </section>
+  <section class="title">
+    <div class="thanks">
+      <h1>Thank you!</h1>
+      <div class="thanks-right">
+        <img src="img/hhh_logo.png" alt="Holland Hybrid Heart logo">
+        <p>Special thanks to:</p>
+        <ul class="dash"><li>The Holland Hybrid Heart</li><li>Viola Bini &amp; Mathias Peirlinck</li><li>Dennis Ogiermann +Ferrite devs</li></ul>
+      </div>
+    </div>
+    
+  </section>
+  <section class="title center-title">
+    <h1 class="section-title">Additional material</h1>
+    
+  </section>
+  <section>
+    <h2>Some other important features</h2>
+    <ul class="big tight">
+      <li>Nonlinear Green–Lagrange strain tensor, no linearization</li>
+      <li>Geometrically non-linear with a Rodrigue’s parametrization of the directors</li>
+      <li>Agnostic to element types (linear triangle, quadratic quads, etc.)</li>
+      <li>MITC3, MITC4, MITC6(a) MITC9 shear treatment</li>
+      <li>Compressible and incompressible hyperelasticity</li>
+      <li>Curved Geometries using <em>NodeFrames</em></li>
+      <li>Works with <em>L2Projector</em>, <em>PointEvalHandler</em>, <em>WriteVTK</em>, etc.</li>
+    </ul>
+    
+  </section>
+  <section>
+    <h2>Examples — Cooks’ membrane</h2>
+    <img class="fig wide-fig" src="img/cooks.jpg" alt="Cook's membrane: deformed mesh and convergence of the vertical tip displacement">
+    
+  </section>
+  <section>
+    <h2>Examples — Pinched Cylinder</h2>
+    <img class="fig wide-fig" src="img/pinched_cylinder.jpg" alt="Pinched cylinder: deformed mesh and convergence of the vertical tip displacement">
+    
+  </section>
+  <section>
+    <h2>Examples — Scordelis–Lo roof</h2>
+    <img class="fig wide-fig" src="img/scordelis_lo.jpg" alt="Scordelis-Lo roof: deformed mesh and convergence of the vertical tip displacement">
+    
+  </section>
+  <section>
+    <h2>Examples — Pinched Hemisphere</h2>
+    <img class="fig wide-fig" src="img/pinched_hemisphere.jpg" alt="Pinched hemisphere: deformed mesh and convergence of the horizontal tip displacement">
+    
+  </section>
+  <section>
+    <h2>Example — Parabolic Hyperboloid</h2>
+    <img class="fig wide-fig" src="img/hyperboloid.jpg" alt="Parabolic hyperboloid: deformed mesh and convergence of the vertical displacement">
+    <aside class="notes">This example is often done to check shell formulation because it combined thin shell shear locking, curved initial geometry, edge traction, etc.</aside>
+  </section>
+  <section>
+    <h2>Examples — Slit Annular plate</h2>
+    <div class="cols pair">
+      <img class="fig" src="img/slit_plot.jpg" alt="Slit annular plate: load factor versus tip deflection">
+      <img class="fig" src="img/slit_mesh.jpg" alt="Slit annular plate: deformed mesh">
+    </div>
+    
+  </section>
+  <section>
+    <h2>Examples – Cantilever Roll-Up</h2>
+    <div class="cols pair">
+      <img class="fig" src="img/rollup_plot.jpg" alt="Cantilever roll-up: load factor versus tip deflection">
+      <img class="fig" src="img/rollup_mesh.jpg" alt="Cantilever roll-up: deformed mesh">
+    </div>
+    
+  </section>
+  <section>
+    <h2>Explicit assembly function are allocation-free</h2>
+    <img class="fig tall-fig" src="img/allocations.jpg" alt="Per-element time and allocations, explicit kernels versus ForwardDiff, for triangles and quadrilaterals with and without MITC shear tying">
+    <aside class="notes">Sorry for the ugly ClaudeCode plots…but I didn&#x27;t have time to make them pretty</aside>
+  </section>
+  <section>
+    <h2>Appendix – Curved geometries</h2>
+    <div class="cols wide-right">
+      <div><p class="lead2">Initially curved geometries require a <em>NodeFrames</em> in the <em>ShellCellValues</em> , which goes into <em>reinit!</em></p>
+        <p class="lead2">See the pinched cylinder</p></div>
+      <pre class="code-s"><code class="language-julia" data-trim data-line-numbers>&quot;&quot;&quot;
+    NodeFrames
+
+Per-node area-weighted averaged director frames for a shell mesh. Eliminates the
+O(h/R) inter-element frame inconsistency that occurs when adjacent curved-shell
+elements each derive their own centroid frame.
+
+Construct via `NodeFrames(grid, ip_geo)`. Pass to `reinit!(scv, x, nf, node_ids)`
+instead of the plain `reinit!(scv, x)` to activate per-node frames.
+
+For flat shells the result is identical to the centroid-frame approach.
+&quot;&quot;&quot;
+struct NodeFrames
+    G₃ :: Vector{Vec{3,Float64}}
+    T₁ :: Vector{Vec{3,Float64}}
+    T₂ :: Vector{Vec{3,Float64}}
+end</code></pre>
+    </div>
+    
+  </section>
+
+</div></div>
+
+<script src="../vendor/reveal/reveal.js"></script>
+<script src="../vendor/reveal/plugin/notes/notes.js"></script>
+<script src="../vendor/katex/dist/katex.min.js"></script>
+<script src="../vendor/katex/dist/contrib/auto-render.min.js"></script>
+<script src="../vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="js/deck.js?v=1"></script>
+<script>
+  deckReady(Reveal);
+  // Equations: \( inline \) and \[ display \] LaTeX, rendered once Reveal is ready
+  Reveal.on('ready', () => {
+    renderMathInElement(document.querySelector('.slides'), {
+      delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\[', right: '\\]', display: true}, {left: '\\(', right: '\\)', display: false}],
+      ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre'], throwOnError: false
+    });
+    Reveal.layout();
+  });
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0, center: false,
+    hash: true, slideNumber: 'c', controls: true, controlsLayout: 'edges', progress: true,
+    transition: 'fade', backgroundTransition: 'none',
+    plugins: [RevealNotes, RevealHighlight]
+  });
+</script>
+</body>
+</html>
