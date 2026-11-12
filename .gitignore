@@ -1,0 +1,3 @@
+# Keep the vendored KaTeX dist/ folder even if a global ignore rule excludes "dist"
+!vendor/katex/dist/
+!vendor/katex/dist/**
