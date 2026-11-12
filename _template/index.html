@@ -6,9 +6,9 @@
   <title>Talk title</title>
   <link rel="stylesheet" href="../vendor/reveal/reset.css">
   <link rel="stylesheet" href="../vendor/reveal/reveal.css">
-  <link rel="stylesheet" href="../vendor/reveal/plugin/highlight/monokai.css">
   <link rel="stylesheet" href="../vendor/katex/dist/katex.min.css">
   <link rel="stylesheet" href="css/theme.css?v=1">
+  <link rel="stylesheet" href="css/code.css?v=1">
 </head>
 <!-- Footer text: edit data-footer. Keys: S speaker notes · L light/dark · Esc overview · F fullscreen -->
 <body data-footer="Your Name | Talk title | Event 2026">
@@ -41,11 +41,11 @@
     <p class="fragment">with velocity \(\mathbf{u}\), pressure \(p\) and viscosity \(\nu\).</p>
   </section>
 
-  <!-- 4. Code next to a figure (Julia highlighting; data-line-numbers highlights lines step by step) -->
+  <!-- 4. Code next to a figure (Julia colouring like VS Code; data-line-numbers shows numbers, data-hl="3-4" highlights lines) -->
   <section data-label="Implementation">
     <h2>Code on the left, result on the right</h2>
     <div class="cols">
-      <pre><code class="language-julia" data-trim data-line-numbers="1-2|3-4">
+      <pre><code class="language-julia" data-trim data-line-numbers data-hl="3-4">
 using WaterLily
 sim = Simulation((256, 128), (1, 0), 32; ν=1e-3)
 sim_step!(sim, 10)
@@ -97,7 +97,7 @@ println(sim_time(sim))
 <script src="../vendor/reveal/plugin/notes/notes.js"></script>
 <script src="../vendor/katex/dist/katex.min.js"></script>
 <script src="../vendor/katex/dist/contrib/auto-render.min.js"></script>
-<script src="../vendor/reveal/plugin/highlight/highlight.js"></script>
+<script src="js/code.js?v=1"></script>
 <script src="js/deck.js?v=1"></script>
 <script>
   deckReady(Reveal);
@@ -113,7 +113,7 @@ println(sim_time(sim))
     width: 1280, height: 720, margin: 0, center: false,
     hash: true, slideNumber: 'c/t', controls: true, progress: true,
     transition: 'fade', backgroundTransition: 'none',
-    plugins: [RevealNotes, RevealHighlight]
+    plugins: [RevealNotes]
   });
 </script>
 </body>

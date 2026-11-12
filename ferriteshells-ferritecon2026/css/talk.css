@@ -78,7 +78,6 @@ body.on-title .deck-header { display: none; }
 .reveal pre.code-xs { font-size: 11.5px; }
 .reveal pre.code-xs code { line-height: 1.28; max-height: 560px; padding: .8em 1em; }
 .reveal pre.code-s code, .reveal pre.code-m code { max-height: 520px; }
-.reveal pre code .hljs-ln-numbers { color: #75715e; }
 .cols.codes { gap: 24px; align-items: start; }
 .cols.codes.tall { grid-template-columns: 1.05fr 1fr; }
 

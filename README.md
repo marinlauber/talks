@@ -23,3 +23,19 @@ Edit `my-talk-event2027/index.html` (one `<section>` per slide), put figures in 
 - `ferriteshells-ferritecon2026/`: the FerriteCon 2026 talk, rebuilt as native HTML from the Google Slides (text, equations and code are live; figures are images). The two videos go in its `img/` as `membrane_shear.mp4` and `pillow_inflation.mp4`.
 - `.nojekyll` makes Pages serve files as they are.
 - reveal.js and KaTeX are MIT licensed (see `vendor/`).
+
+## Code style (VS Code Julia look)
+
+Code blocks use `js/code.js` + `css/code.css`: a small Julia tokenizer with the
+VS Code Default Light+/Dark+ palettes. Palettes follow the `L` theme toggle;
+add `class="code-dark"` to a `<pre>` to force the dark palette.
+
+```html
+<pre><code class="language-julia" data-trim data-line-numbers data-hl="3-4">
+...
+</code></pre>
+```
+
+- `data-line-numbers` shows line numbers, `data-hl="3-5,9"` highlights lines.
+- Edit the `--vs-*` variables at the top of `css/code.css` to make your own style.
+- The tokenizer is approximate (not a full Julia parser).

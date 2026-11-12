@@ -8,7 +8,7 @@ html[data-theme="dark"] {
   --bg: #11161c; --fg: #e8ecf1; --muted: #9aa5b3; --accent: #4fc3d4; --rule: #2a323c;
   --code-bg: #1a212a;
 }
-html, body { background: var(--bg); }
+html, body, .reveal-viewport { background: var(--bg) !important; }
 .reveal { font-family: var(--font); color: var(--fg); font-size: 34px; }
 .reveal .slides { text-align: left; }
 

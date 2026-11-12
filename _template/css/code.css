@@ -1,0 +1,34 @@
+/* Code blocks coloured like VS Code (Default Light+ / Dark+), for Julia.
+   Palette follows the page theme (press L); add class "code-dark" to a <pre> to force the dark one. */
+:root, .vs-light {
+  --vs-bg: #ffffff; --vs-fg: #000000; --vs-border: #d4d4d4; --vs-ln: #237893; --vs-hl: #fff8c5;
+  --vs-comment: #008000; --vs-string: #a31515; --vs-number: #098658; --vs-const: #0000ff;
+  --vs-decl: #0000ff; --vs-flow: #af00db; --vs-fn: #795e26; --vs-type: #267f99;
+}
+html[data-theme="dark"], .reveal pre.code-dark {
+  --vs-bg: #1e1e1e; --vs-fg: #d4d4d4; --vs-border: #333333; --vs-ln: #858585; --vs-hl: #2a2d2e;
+  --vs-comment: #6a9955; --vs-string: #ce9178; --vs-number: #b5cea8; --vs-const: #569cd6;
+  --vs-decl: #569cd6; --vs-flow: #c586c0; --vs-fn: #dcdcaa; --vs-type: #4ec9b0;
+}
+.reveal pre { box-shadow: none; background: none; }
+.reveal pre code.vs {
+  background: var(--vs-bg); color: var(--vs-fg);
+  border: 1px solid var(--vs-border); border-radius: 6px;
+  font-family: "Cascadia Code", Consolas, Menlo, Monaco, "DejaVu Sans Mono", "Courier New", monospace;
+  font-variant-ligatures: none; white-space: pre; counter-reset: ln;
+  display: block; box-sizing: border-box; overflow: auto; padding: .8em 1em;
+}
+.vs .ln { display: block; min-height: 1.2em; }
+.vs.numbered .ln::before {
+  counter-increment: ln; content: counter(ln); display: inline-block; width: 2.4em; margin-right: 1.1em;
+  text-align: right; color: var(--vs-ln); user-select: none;
+}
+.vs .ln.hl { background: var(--vs-hl); }
+.vs .c-com   { color: var(--vs-comment); }
+.vs .c-str   { color: var(--vs-string); }
+.vs .c-num   { color: var(--vs-number); }
+.vs .c-const { color: var(--vs-const); }
+.vs .c-decl  { color: var(--vs-decl); }
+.vs .c-flow  { color: var(--vs-flow); }
+.vs .c-fn    { color: var(--vs-fn); }
+.vs .c-type  { color: var(--vs-type); }
