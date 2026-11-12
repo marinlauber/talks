@@ -16,14 +16,16 @@
 <div class="deck-header">FerriteShells.jl - A general shell assembler for Ferrite.jl</div>
 <div class="reveal"><div class="slides">
 
+  <!-- slide 1 -->
   <section class="title">
     <img class="logo-big" src="img/ferrite_logo.png" alt="FerriteShells.jl logo">
     <h1>FerriteShells.jl</h1>
     <h2 class="subtitle">A general shell assembler for Ferrite.jl</h2>
     <p class="authors">Marin Lauber, <b>Viola Bini</b> &amp; Mathias Peirlinck</p>
     <p class="affil">Delft University of Technology</p>
-    
   </section>
+
+  <!-- slide 2 -->
   <section>
     <h2>Shells are both natural and engineered structures</h2>
     <p class="lead">A <b>thin</b>, <b>curved</b> plate structure shaped to transmit applied forces by <b>compressive</b>, <b>tensile</b>, and <b>shear stresses</b> that act in the plane of the surface (Encyclopedia Britannica)</p>
@@ -34,6 +36,8 @@
     </div>
     <aside class="notes">Felix Candela: Spanish and Mexican architect who specialised in thin concrete structures during his career, most of them can be seen in Mexico, they are known as Cascarones.</aside>
   </section>
+
+  <!-- slide 3 -->
   <section>
     <h2>Trade degrees-of-freedom for a <em>kinematic assumption</em> for the through-thickness behaviour</h2>
     <div class="cols wide-left">
@@ -49,12 +53,14 @@
     </div>
     <aside class="notes">By thick and thin, we usual refer to structures that have t/L &gt; 0.05 and t/L &lt; 0.05, respectively. Can maybe relate to the talk on FerriteIGA.jl that happened before for the C1 continuity?</aside>
   </section>
+
+  <!-- slide 4 -->
   <section>
     <h2><em>Reissner–Mindlin</em> weak form of the internal energy</h2>
     <div class="cols side-covers">
       <div>
         <p class="lead2">The “<b>compressive</b>, <b>tensile</b>, and <b>shear stresses</b>” part</p>
-        <div class="eq">\[ \mathcal{W}_{\mathrm{int}}=\int_{\omega}\tfrac12\Big(\fcolorbox{#1f6fd1}{white}{$N^{\alpha\beta}\gamma_{\alpha\beta}$}+\fcolorbox{#e08a1e}{white}{$M^{\alpha\beta}\kappa_{\alpha\beta}$}+\fcolorbox{#2e9d3a}{white}{$Q^{\alpha}\gamma_{\alpha}$}\Big)\sqrt{A}\,\mathrm{d}y \]</div>
+        <div class="eq">\[ \mathcal{W}_{\mathrm{int}}=\int_{\omega}\tfrac12\Big(\fcolorbox{#1f6fd1}{transparent}{$N^{\alpha\beta}\gamma_{\alpha\beta}$}+\fcolorbox{#e08a1e}{transparent}{$M^{\alpha\beta}\kappa_{\alpha\beta}$}+\fcolorbox{#2e9d3a}{transparent}{$Q^{\alpha}\gamma_{\alpha}$}\Big)\sqrt{A}\,\mathrm{d}y \]</div>
         <p class="lead2">and the strains (function of surface <b>measures</b>)</p>
         <div class="eq small-eq">\[ \gamma_{\alpha\beta}=\tfrac12\left(a_{\alpha\beta}-A_{\alpha\beta}\right),\qquad \kappa_{\alpha\beta}=\tfrac12\left(\mathbf a_\alpha\cdot\mathbf d_{,\beta}+\mathbf a_\beta\cdot\mathbf d_{,\alpha}\right)-B^{0}_{\alpha\beta} \]
         \[ \gamma_{\alpha}=\mathbf a_\alpha\cdot\mathbf d-\mathbf A_\alpha\cdot\mathbf G_3 \]</div>
@@ -64,6 +70,8 @@
     <div class="doclink"><a href="https://marinlauber.github.io/FerriteShells.jl/dev/ReissnerMindlin/">https://marinlauber.github.io/FerriteShells.jl/dev/ReissnerMindlin/</a></div>
     <aside class="notes">Internal energy is a function of membrane (blue), bending (orange) and shear (green) terms. These in terms depend on covariant surface metrics, which are the classical strain components expressed in the curvilinear coordinates. This is also the Naghdi shell internal energy, but it&#x27;s obtained through another route.</aside>
   </section>
+
+  <!-- slide 5 -->
   <section>
     <h2>The ideal <em>FerriteShells.jl</em> implementation should be:</h2>
     <ul class="big">
@@ -75,6 +83,8 @@
     </ul>
     <aside class="notes">Elements can be linear or quadratic quads, and linear and quadratic quadrilaterals, some of the most used ones. Type dispatch is the ability in Julia to specialize code for different types, which means you can reuse a lot of code by simply changing the bits that you need to specialize. It&#x27;s great obviously ;) Using reinit! Is to make sure we keep the Ferrite way of doing things.</aside>
   </section>
+
+  <!-- slide 6 -->
   <section>
     <h2>Embed the surface metrics required in <em>ShellCellValues</em></h2>
     <p class="lead2"><em>reinit!</em> Updates these local measures of the shell</p>
@@ -102,6 +112,8 @@ end</code></pre>
     </div>
     <aside class="notes">The ShellCellValues is an extension of CellValues to hold the surface measures required to assemble shells. It has the classical function and geometric interpolation as well as the quadrature rule. It also stores the shape function values, derivative and jacobian locally (they are needed a lot in the assembly). Then it stores the covariant basis vectors, the covariant unit basis vector and the covariant component of the metric and bending tensor at each integration points. Additionally, it stores the local frame and the mitc interpolation scheme (if any). Note: this code won&#x27;t work, it&#x27;s for illustrative purpose.</aside>
   </section>
+
+  <!-- slide 7 -->
   <section>
     <h2>Assembly: variation of the energy through <em>ForwardDiff.jl</em></h2>
     <div class="eq">\[ \mathcal{W}_{\mathrm{int}}=\int_{\omega}\tfrac12\Big(N^{\alpha\beta}\gamma_{\alpha\beta}+M^{\alpha\beta}\kappa_{\alpha\beta}+Q^{\alpha}\gamma_{\alpha}\Big)\sqrt{A}\,\mathrm{d}y \]</div>
@@ -151,12 +163,15 @@ end</code></pre></div>
     <p class="fragment" data-fragment-index="2">Explicit version for fast and allocation-free version</p>
     <aside class="notes">This is the actual code! In practice this is too slow, so we have explicit assembly procedures for these terms, but this function can still be used as validation and in some complex cases. Uses Tensors.jl for operations between surface metrics, material tensors, etc.</aside>
   </section>
+
+  <!-- slide 8 -->
   <section>
     <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
     <p class="lead2"><span class="fn">linear_elasticity.jl</span> case into a <span class="fn">linear_elastic_shell.jl</span></p>
     <div class="media center" data-file="img/mesh_single.jpg" data-alt="Displacement magnitude, linear elasticity"></div>
-    
   </section>
+
+  <!-- slide 9 -->
   <section>
     <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
     <div class="cols codes">
@@ -193,7 +208,6 @@ assemble_shell!(K, r, dh, scv, u, mat)
 assemble_traction!(f_ext, dh, facetset, ip, fqr, traction)
 # ...</code></pre></div>
     </div>
-    
   </section>
   <section>
     <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
@@ -254,28 +268,33 @@ function assemble_shell!(K, r, dh, scv, u, mat)
     end
 end</code></pre></div>
     </div>
-    
   </section>
+
+  <!-- slide 10 -->
   <section>
     <h2>How much changes to <em>Ferrite.jl</em> are required to use shells?</h2>
     <p class="lead2"><span class="fn">linear_elasticity.jl</span> case into a <span class="fn">linear_elastic_shell.jl</span></p>
     <div class="media center" data-file="img/mesh_comparison.jpg" data-alt="Displacement magnitude: Ferrite.jl (left) and FerriteShells.jl (right)"></div>
     <p class="small cap">Note: plane strain vs plane stress</p>
-    
   </section>
+
+  <!-- slide 11 -->
   <section>
     <h2>Examples — Membrane Shear</h2>
     <p class="lead2"><em class="plain">Lagrange{RefQuadrilateral, 1}</em> – Newton-Raphson solver with Pseudo-Transient Continuation (PTC) to traverse the unstable equilibrium path</p>
     <p class="small">Top edge sheared with u<sub>y</sub> = 0.05·t and u<sub>x</sub> = 3·(t−1)·x/380.</p>
-    <div class="media center wide" data-file="img/membrane_shear.mp4" data-alt="Membrane shear: vertical displacement"></div>
+    <div class="media center wide" data-file="img/membrane_shear.gif" data-alt="Membrane shear: vertical displacement"></div>
     <aside class="notes">There is a slight perturbation of the vertical position of the nodes in the form w = 0.01·cos(2x/20)·cos(2y/20) [mm]</aside>
   </section>
+
+  <!-- slide 12 -->
   <section>
     <h2>Examples — Thin Pillow Inflation</h2>
     <p class="lead2"><em class="plain">Lagrange{RefQuadrilateral, 2, MITC9}</em> with Newton-Raphson and HHT-α time integration.</p>
-    <div class="media center wide" data-file="img/pillow_inflation.mp4" data-alt="Thin pillow inflation: displacement magnitude"></div>
-    
+    <div class="media center wide" data-file="img/pillow_inflation.gif" data-alt="Thin pillow inflation: displacement magnitude"></div>
   </section>
+
+  <!-- slide 13 -->
   <section>
     <h2><em>FerriteShells.jl</em> – summary</h2>
     <ul class="big">
@@ -288,8 +307,9 @@ end</code></pre></div>
       <li><em>HyperElastic</em> material <em>W(C::SymmetricTensor{2,3,T}) -> T</em>
         <ul><li>Incompressible plane stress</li><li>Compressible plane stress (Newton condensation)</li></ul></li>
     </ul>
-    
   </section>
+
+  <!-- slide 14 -->
   <section class="title">
     <div class="thanks">
       <h1>Thank you!</h1>
@@ -299,12 +319,14 @@ end</code></pre></div>
         <ul class="dash"><li>The Holland Hybrid Heart</li><li>Viola Bini &amp; Mathias Peirlinck</li><li>Dennis Ogiermann +Ferrite devs</li></ul>
       </div>
     </div>
-    
   </section>
+
+  <!-- slide 15 -->
   <section class="title center-title">
     <h1 class="section-title">Additional material</h1>
-    
   </section>
+
+  <!-- slide 16 -->
   <section>
     <h2>Some other important features</h2>
     <ul class="big tight">
@@ -316,54 +338,65 @@ end</code></pre></div>
       <li>Curved Geometries using <em>NodeFrames</em></li>
       <li>Works with <em>L2Projector</em>, <em>PointEvalHandler</em>, <em>WriteVTK</em>, etc.</li>
     </ul>
-    
   </section>
+
+  <!-- slide 17 -->
   <section>
     <h2>Examples — Cooks’ membrane</h2>
     <img class="fig wide-fig" src="img/cooks.jpg" alt="Cook's membrane: deformed mesh and convergence of the vertical tip displacement">
-    
   </section>
+
+  <!-- slide 18 -->
   <section>
     <h2>Examples — Pinched Cylinder</h2>
     <img class="fig wide-fig" src="img/pinched_cylinder.jpg" alt="Pinched cylinder: deformed mesh and convergence of the vertical tip displacement">
-    
   </section>
+
+  <!-- slide 19 -->
   <section>
     <h2>Examples — Scordelis–Lo roof</h2>
     <img class="fig wide-fig" src="img/scordelis_lo.jpg" alt="Scordelis-Lo roof: deformed mesh and convergence of the vertical tip displacement">
-    
   </section>
+
+  <!-- slide 20 -->
   <section>
     <h2>Examples — Pinched Hemisphere</h2>
     <img class="fig wide-fig" src="img/pinched_hemisphere.jpg" alt="Pinched hemisphere: deformed mesh and convergence of the horizontal tip displacement">
-    
   </section>
+
+  <!-- slide 21 -->
   <section>
     <h2>Example — Parabolic Hyperboloid</h2>
     <img class="fig wide-fig" src="img/hyperboloid.jpg" alt="Parabolic hyperboloid: deformed mesh and convergence of the vertical displacement">
     <aside class="notes">This example is often done to check shell formulation because it combined thin shell shear locking, curved initial geometry, edge traction, etc.</aside>
   </section>
+
+  <!-- slide 22 -->
   <section>
     <h2>Examples — Slit Annular plate</h2>
     <div class="cols pair">
       <img class="fig" src="img/slit_plot.jpg" alt="Slit annular plate: load factor versus tip deflection">
       <img class="fig" src="img/slit_mesh.jpg" alt="Slit annular plate: deformed mesh">
     </div>
-    
   </section>
+
+  <!-- slide 23 -->
   <section>
     <h2>Examples – Cantilever Roll-Up</h2>
     <div class="cols pair">
       <img class="fig" src="img/rollup_plot.jpg" alt="Cantilever roll-up: load factor versus tip deflection">
       <img class="fig" src="img/rollup_mesh.jpg" alt="Cantilever roll-up: deformed mesh">
     </div>
-    
   </section>
+
+  <!-- slide 24 -->
   <section>
     <h2>Explicit assembly function are allocation-free</h2>
     <img class="fig tall-fig" src="img/allocations.jpg" alt="Per-element time and allocations, explicit kernels versus ForwardDiff, for triangles and quadrilaterals with and without MITC shear tying">
     <aside class="notes">Sorry for the ugly ClaudeCode plots…but I didn&#x27;t have time to make them pretty</aside>
   </section>
+
+  <!-- slide 25 -->
   <section>
     <h2>Appendix – Curved geometries</h2>
     <div class="cols wide-right">
@@ -387,7 +420,6 @@ struct NodeFrames
     T₂ :: Vector{Vec{3,Float64}}
 end</code></pre>
     </div>
-    
   </section>
 
 </div></div>
